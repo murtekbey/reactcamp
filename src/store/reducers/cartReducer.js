@@ -7,14 +7,29 @@ const initialState = {
 
 export default function cartReducer(state = initialState, { type, payload }) {
     switch (type) {
+
         case ADD_TO_CART:
             let product = state.cartItems.find(c => c.product.id === payload.id)
+            state.cartItems.push({ quantity: 1, product: product })
             if (product) {
-                product.quantity += 1;
+                product.quantity++;
+                return {
+                    ...state
+                }
             } else {
-                cartItems.push(product);
+                return {
+                    ...state,
+                    cartItems: [...state.cartItems, { quantity: 1, product: payload }]
+                }
             }
+
+        case REMOVE_FROM_CART:
+            return {
+                ...state,
+                cartItems: state.cartItems.filter(c => c.product.id !== payload.id)
+            }
+
         default:
-            break;
+            return state;
     }
 }
