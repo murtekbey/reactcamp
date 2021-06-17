@@ -2,7 +2,7 @@ import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cartActions";
 import { cartItems } from "../initialValues/cartItems";
 
 const initialState = {
-    cartItems: cartItems
+    cartItems: cartItems,
 }
 
 export default function cartReducer(state = initialState, { type, payload }) {
@@ -10,7 +10,6 @@ export default function cartReducer(state = initialState, { type, payload }) {
 
         case ADD_TO_CART:
             let product = state.cartItems.find(c => c.product.id === payload.id)
-            state.cartItems.push({ quantity: 1, product: product })
             if (product) {
                 product.quantity++;
                 return {

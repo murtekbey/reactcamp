@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Menu, Icon, Table } from "semantic-ui-react";
+import { Menu, Icon, Table, Button } from "semantic-ui-react";
 import ProductService from "../services/productService";
+import { addToCart } from "../store/actions/cartActions";
+import { toast } from "react-toastify";
 
 export default function ProductList() {
+  const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
   // lifecycle hook
 
@@ -12,7 +16,12 @@ export default function ProductList() {
     productService
       .getProducts()
       .then((result) => setProducts(result.data.data));
-  },[]);
+  }, []);
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+    toast.success(`Sepete eklendi: ${product.productName}`)
+  };
 
   return (
     <div>
@@ -24,6 +33,7 @@ export default function ProductList() {
             <Table.HeaderCell>Stok Adeti</Table.HeaderCell>
             <Table.HeaderCell>Açıklama</Table.HeaderCell>
             <Table.HeaderCell>Kategori</Table.HeaderCell>
+            <Table.HeaderCell></Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
@@ -31,12 +41,17 @@ export default function ProductList() {
           {products.map((product) => (
             <Table.Row key={product.id}>
               <Table.Cell>
-                <Link to={`/products/${product.productName}`}>{product.productName}</Link>
+                <Link to={`/products/${product.productName}`}>
+                  {product.productName}
+                </Link>
               </Table.Cell>
               <Table.Cell>{product.unitPrice}</Table.Cell>
               <Table.Cell>{product.unitsInStock}</Table.Cell>
               <Table.Cell>{product.quantityPerUnit}</Table.Cell>
               <Table.Cell>{product.category.categoryName}</Table.Cell>
+              <Table.Cell>
+                <Button onClick={() => handleAddToCart(product)}>Sepete ekle</Button>
+              </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
